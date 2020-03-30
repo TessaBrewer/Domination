@@ -2,8 +2,8 @@
 // Created by Deven Brewer #19201772 on 27/03/2020.
 //
 
-#ifndef DOMINATION_GAMELOGIC_H
-#define DOMINATION_GAMELOGIC_H
+#ifndef DOMINATION_GAMEINIT_H
+#define DOMINATION_GAMEINIT_H
 
 #include "Object_Definition.h"
 
@@ -27,4 +27,4 @@ struct gameState* initGameState();
 //Frees a gameState object, including all allocated memory
 void freeGameState(struct gameState* gameStateInstance);
 
-#endif //DOMINATION_GAMELOGIC_H
+#endif //DOMINATION_GAMEINIT_H

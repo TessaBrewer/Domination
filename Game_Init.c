@@ -2,7 +2,7 @@
 // Created by Deven Brewer #19201772 on 27/03/2020.
 //
 
-#include "Game_Logic.h"
+#include "Game_Init.h"
 //So we can print error messages
 #include <stdio.h>
 //For memory allocation and freeing
@@ -119,6 +119,7 @@ struct gameState* initGameState()
     output->player2 = initPlayer((enum colour)Green);
     if(output->player2 == NULL)
         return fprintf(stderr, "Error initializing player2 in initGameState()\n"), freePlayer(output->player1), free(output), NULL;
+    output->currentTurn = (enum colour)Red;
 
     struct{enum squareType sT; enum colour c;} InitialGameState [8][8]=
             {

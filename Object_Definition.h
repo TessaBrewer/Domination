@@ -48,5 +48,6 @@ struct gameState
 {
     struct player* player1, *player2;
     struct square* board[8][8];
+    enum colour currentTurn;
 };
 #endif //DOMINATION_OBJECTDEF_H
