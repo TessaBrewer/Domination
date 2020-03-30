@@ -3,4 +3,4 @@ project(Domination)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Assignment_One main.c Object_Definition.h Game_Logic.h Game_Logic.c)
+add_executable(Domination main.c Object_Definition.h Game_Init.h Game_Init.c ASCII_IO.h ASCII_IO.c Game_Logic.h Game_Logic.c)
