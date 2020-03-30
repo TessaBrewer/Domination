@@ -10,13 +10,13 @@
 #define leftSpacing() printf("           ")
 
 //This is what we'll use to print off the top and bottom row of numbers
-#define printHeaderRow() printf(" | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
+#define printHeaderRow() printf("  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
 
-#define printBlankRow() printf("-+---+---+---+---+---+---+---+---+- ")
+#define printBlankRow() printf("--+---+---+---+---+---+---+---+---+-- ")
 
 static void printBoardRow(struct gameState* currentGameState, int rowNumber)
 {
-    printf("%i", rowNumber);
+    printf("%i ", rowNumber);
     for(int i = 0; i < 8; i++)
     {
         if(currentGameState->board[rowNumber][i]->canHaveStack == invalid)
@@ -37,7 +37,7 @@ static void printBoardRow(struct gameState* currentGameState, int rowNumber)
             }
         }
     }
-    printf("|%i ", rowNumber);
+    printf("| %i ", rowNumber);
 }
 
 void printGameState(struct gameState* currentGameState)
