@@ -40,8 +40,7 @@ struct square* initSquare(enum squareType isValid, enum colour initPieceColour)
     {
         output->stack = initPiece(initPieceColour);
         if (output->stack == NULL)
-            return free(output), fprintf(stderr,
-                                         "Error declaring initial game piece in initSquare(enum colour)\n"), NULL;
+            return free(output), fprintf(stderr, "Error declaring initial game piece in initSquare(enum colour)\n"), NULL;
         output->stackHeight = 1;
     }else
     {
@@ -77,7 +76,6 @@ struct player* initPlayer(enum colour playerColour)
 
     //Initialize all values
     output->playerColour = playerColour;
-    output->reserveCount = 0;
     output->reserve = initSquare((enum squareType)valid, (enum colour)None);
     if(output->reserve == NULL) //Handle potential error from initSquare()
         return free(output), fprintf(stderr, "Error declaring player reserve stack in initPlayer()\n"), NULL;
@@ -100,8 +98,8 @@ static void abortInitGameState(struct gameState* input, int row, int column)
         for(int j = 0; (j < 8 && i != row) || (j <= column && i == row); j++)
             freeSquare(input->board[i][j]);
 
-    freePlayer(input->player1);
-    freePlayer(input->player2);
+    freePlayer(input->redPlayer);
+    freePlayer(input->greenPlayer);
 
     free(input);
 }
@@ -113,12 +111,12 @@ struct gameState* initGameState()
         return fprintf(stderr, "Error allocating memory for board in initGameState()\n"), NULL;
 
     //Initialize the player objects
-    output->player1 = initPlayer((enum colour)Red);
-    if(output->player1 == NULL)
-        return fprintf(stderr, "Error initializing player1 in initGameState()\n"), free(output), NULL;
-    output->player2 = initPlayer((enum colour)Green);
-    if(output->player2 == NULL)
-        return fprintf(stderr, "Error initializing player2 in initGameState()\n"), freePlayer(output->player1), free(output), NULL;
+    output->redPlayer = initPlayer((enum colour)Red);
+    if(output->redPlayer == NULL)
+        return fprintf(stderr, "Error initializing redPlayer in initGameState()\n"), free(output), NULL;
+    output->greenPlayer = initPlayer((enum colour)Green);
+    if(output->greenPlayer == NULL)
+        return fprintf(stderr, "Error initializing greenPlayer in initGameState()\n"), freePlayer(output->redPlayer), free(output), NULL;
     output->currentTurn = (enum colour)Red;
 
     struct{enum squareType sT; enum colour c;} InitialGameState [8][8]=
@@ -137,9 +135,10 @@ struct gameState* initGameState()
     {
         for(int column = 0; column < 8; column++)
         {
+            //Init the square
             output->board[row][column] = initSquare(InitialGameState[row][column].sT, InitialGameState[row][column].c);
             if(output->board[row][column] == NULL)
-                return abortInitGameState(output, row, column), freePlayer(output->player1), freePlayer(output->player2), NULL;
+                return abortInitGameState(output, row, column), freePlayer(output->redPlayer), freePlayer(output->greenPlayer), NULL;
         }
     }
 
@@ -148,8 +147,8 @@ struct gameState* initGameState()
 //Frees a board object, including all allocated memory
 void freeGameState(struct gameState* gameStateInstance)
 {
-    freePlayer(gameStateInstance->player1);
-    freePlayer(gameStateInstance->player2);
+    freePlayer(gameStateInstance->redPlayer);
+    freePlayer(gameStateInstance->greenPlayer);
 
     for(int i = 0; i < 8; i++)
     {

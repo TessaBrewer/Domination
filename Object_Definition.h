@@ -38,8 +38,6 @@ struct square
 struct player
 {
     enum colour playerColour;
-    //The number of pieces this player has in reserve, they get these by "capturing" their own pieces, a turn can be used to place one of these onto the board
-    int reserveCount;
     //Where we'll store all of the reserve pieces incase they need to be replaced to the board, this allows us to avoid having to constantly free and reallocate pieces as they enter/leave a player's reserve
     struct square* reserve;
     //The number of pieces this player owns which belong to the other player, this is entirely unnecessary for the game's core functionality
@@ -49,8 +47,12 @@ struct player
 //Represents the game state, we'll be able to easily modify the game state by passing a pointer to this object back and forth between functions
 struct gameState
 {
-    struct player* player1, *player2;
+    struct player* redPlayer, *greenPlayer;
     struct square* board[8][8];
     enum colour currentTurn;
 };
+
+//What we'll use to represent a move in game
+struct userMove{struct square* origination; struct square* destination; int pieceCount;};
+
 #endif //DOMINATION_OBJECTDEF_H
