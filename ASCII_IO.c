@@ -4,15 +4,21 @@
 
 #include "Game_Logic.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "ASCII_IO.h"
+#include "Object_Definition.h"
+
+//The size of our input buffer
+    //16 is the maximum length of a valid input
+#define MAX_BUFFER_SIZE 16
 
 //We'll call this is the space on the left is blank to keep everything lined up
 #define leftSpacing() printf("           ")
 
 //This is what we'll use to print off the top and bottom row of numbers
-#define printHeaderRow() printf("  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
+#define printHeaderRow() printf("  |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |")
 
-#define printBlankRow() printf("--+---+---+---+---+---+---+---+---+-- ")
+#define printBlankRow() printf("--+-----+-----+-----+-----+-----+-----+-----+-----+-- ")
 
 static void printBoardRow(struct gameState* currentGameState, int rowNumber)
 {
@@ -21,19 +27,19 @@ static void printBoardRow(struct gameState* currentGameState, int rowNumber)
     {
         if(currentGameState->board[rowNumber][i]->canHaveStack == invalid)
         {
-            printf("| X ");
+            printf("| X 0 ");
         }else
         {
             enum colour tempColour = getTopPieceColour(currentGameState->board[rowNumber][i]);
             if(tempColour == Red)
             {
-                printf("| R ");
+                printf("| R %i ", currentGameState->board[rowNumber][i]->stackHeight);
             } else if (tempColour == Green)
             {
-                printf("| G ");
+                printf("| G %i ", currentGameState->board[rowNumber][i]->stackHeight);
             } else
             {
-                printf("|   ");
+                printf("|   %i ", currentGameState->board[rowNumber][i]->stackHeight);
             }
         }
     }
@@ -178,19 +184,21 @@ void getMove(struct gameState* currentGameState, struct userMove* output)
     int x1, y1; //Coordinates of the origination
     int x2, y2; //Coordinates of the destination
     int pieceCount; //The number of pieces the user wants to move
-    int inputCount; //We'll use this to make sure scanf is getting the right number of values
+    size_t bufferSize = MAX_BUFFER_SIZE;
+    char* inputBuffer = (char *)malloc(sizeof(char) * MAX_BUFFER_SIZE);//The buffer we're reading into, the maximum length of any valid input is 16 chars
     int quitFlag = 0;
+    int inputCount;
 
     while(!quitFlag)
     {
         //Prompt the user for input
         printf("?: ");
-
-        switch (getchar())
+        getline(&inputBuffer, &bufferSize, stdin);
+        switch (inputBuffer[0])
         {
             //Handles the case where the user wants to print out the contents of a stack
             case '?':
-                inputCount = scanf("%*c%i%*c %i%*c ", &x1, &y1);
+                inputCount = sscanf(inputBuffer, "%*c%*c%i%*c %i%*c ", &x1, &y1);
 
                 if(inputCount != 2)
                 {
@@ -207,7 +215,7 @@ void getMove(struct gameState* currentGameState, struct userMove* output)
                 break;
             //Handles the event that the user wants to move a piece from their reserve
             case 'R':
-                inputCount = scanf("%*c%i%*c %i%*c ", &x2, &y2);
+                inputCount = sscanf(inputBuffer, "%*c%*c%i%*c %i%*c ", &x2, &y2);
 
                 if(inputCount != 2) //Make sure we received the correct number of inputs
                 {
@@ -223,18 +231,22 @@ void getMove(struct gameState* currentGameState, struct userMove* output)
 
                 if(currentGameState->currentTurn == Red)
                 {
-                    output->origination = currentGameState->redPlayer->reserve;
+                    output->origination.storage = currentGameState->redPlayer->reserve;
                 } else
                 {
-                    output->origination = currentGameState->greenPlayer->reserve;
+                    output->origination.storage = currentGameState->greenPlayer->reserve;
                 }
-                output->destination = currentGameState->board[x2][y2];
+                output->origination.row = -1; //Set the reserve x value
+                output->origination.column = -1; //Set the reserve y value
+                output->destination.storage = currentGameState->board[x2][y2];
+                output->destination.row = x2;
+                output->destination.column = y2;
                 output->pieceCount = 1; //The user can only move 1 piece out of their reserve at a time
                 quitFlag = 1;
                 break;
             //Handles the event that the user wants to make a standard move
             case '(':
-                inputCount = scanf("%i%*c %i%*c %*c%i%*c %i%*c %i ", &x1, &y1, &x2, &y2, &pieceCount);
+                inputCount = sscanf(inputBuffer, "%*c%i%*c %i%*c %*c%i%*c %i%*c %i ", &x1, &y1, &x2, &y2, &pieceCount);
 
                 if(inputCount != 5) //Make sure we received the correct number of inputs
                 {
@@ -254,12 +266,20 @@ void getMove(struct gameState* currentGameState, struct userMove* output)
                     break;
                 }
 
-                output->origination = currentGameState->board[x1][y1];
-                output->destination = currentGameState->board[x2][y2];
+                output->origination.storage = currentGameState->board[x1][y1];
+                output->origination.row = x1;
+                output->origination.column = y1;
+                output->destination.storage = currentGameState->board[x2][y2];
+                output->destination.row = x2;
+                output->destination.column = y2;
                 output->pieceCount = pieceCount;
 
                 quitFlag = 1;
                 break;
+            default:
+                printf("Please enter a valid move (refer to ReadMe.md for a list of valid moves)\n");
+                break;
         }
     }
+    free(inputBuffer);
 }

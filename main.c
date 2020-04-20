@@ -19,6 +19,12 @@ int main(void)
 
     printGameState(myGameState);
 
+    struct userMove moveObject;
+
+    do {
+        getMove(myGameState, &moveObject);
+    }while(!validateMove(myGameState, &moveObject));
+
     freeGameState(myGameState);
 
     return 0;

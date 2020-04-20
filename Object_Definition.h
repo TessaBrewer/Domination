@@ -38,7 +38,7 @@ struct square
 struct player
 {
     enum colour playerColour;
-    //Where we'll store all of the reserve pieces incase they need to be replaced to the board, this allows us to avoid having to constantly free and reallocate pieces as they enter/leave a player's reserve
+    //Where we'll store all of the reserve pieces in case they need to be replaced to the board, this allows us to avoid having to constantly free and reallocate pieces as they enter/leave a player's reserve
     struct square* reserve;
     //The number of pieces this player owns which belong to the other player, this is entirely unnecessary for the game's core functionality
     int capturedPieces;
@@ -53,6 +53,11 @@ struct gameState
 };
 
 //What we'll use to represent a move in game
-struct userMove{struct square* origination; struct square* destination; int pieceCount;};
+struct userMove
+{
+    struct {struct square* storage; int row; int column;} origination; //We need to include X&Y values to validate the move (so we can calculate distance), the reserve squares will have the locations of (-1, -1)
+    struct {struct square* storage; int row; int column;} destination;
+    int pieceCount;
+};
 
 #endif //DOMINATION_OBJECTDEF_H
