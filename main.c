@@ -17,13 +17,34 @@ int main(void)
 {
     struct gameState* myGameState = initGameState();
 
-    printGameState(myGameState);
-
     struct userMove moveObject;
 
-    do {
-        getMove(myGameState, &moveObject);
-    }while(!validateMove(myGameState, &moveObject));
+    while(canMove(myGameState))
+    {
+        //Print Board
+        printGameState(myGameState);
+
+        //Get Move
+        do {
+            getMove(myGameState, &moveObject);
+        }while(!validateMove(myGameState, &moveObject));
+
+        //Execute Move
+        if(movePieces(myGameState, &moveObject))
+            return fprintf(stderr, "Error in movePieces()\n"), 1;
+
+        //Swap Turn
+        swapTurn(myGameState);
+    }
+
+    //We reach this point when the current player can not move, ie they've lost
+    if(myGameState->currentTurn == Red)
+    {
+        printf("Green Player Wins\n");
+    } else
+    {
+        printf("Red Player Wins\n");
+    }
 
     freeGameState(myGameState);
 
