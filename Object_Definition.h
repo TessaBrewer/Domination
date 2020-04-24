@@ -12,9 +12,6 @@ enum colour {Red, Green, None};
 //Represents whether or not a square object is a valid place to store game pieces, the game board & player reserves should be valid, the empty corners of the 8x8 array should be invalid
 enum squareType {invalid, valid};
 
-//Represents a point on the board, (0, 0) is the top left corner space
-struct point{int x; int y;};
-
 //Represents one of the game pieces, we'll represent a stack of pieces as a one-way linked list
 struct piece
 {

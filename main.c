@@ -12,9 +12,13 @@
 #include "Game_Init.h"
 //Where we've defined all of our I/O functions
 #include "ASCII_IO.h"
+//Gives us our unit tests
+#include "Unit_Tests.h"
 
 int main(void)
 {
+    preformTests();
+
     struct gameState* myGameState = initGameState();
 
     struct userMove moveObject;
