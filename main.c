@@ -17,7 +17,11 @@
 
 int main(void)
 {
-    preformTests();
+    #if defined UNIT_TEST
+        printf("Running Unit Tests\n");
+        preformTests();
+        printf("Report Generated\n");
+    #endif
 
     struct gameState* myGameState = initGameState();
 
