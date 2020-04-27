@@ -17,7 +17,7 @@
 
 int main(void)
 {
-    #if defined UNIT_TEST
+    #if defined TEST
         printf("Running Unit Tests\n");
         preformTests();
         printf("Report Generated\n");
